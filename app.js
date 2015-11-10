@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // test route
 app.get('/', function (req, res) { res.status(200).send('Hello world!') });
-app.post('/hello', reportbot);
+app.post('/report', reportbot);
 // error handler
 app.use(function (err, req, res, next) {
   console.error(err.stack);

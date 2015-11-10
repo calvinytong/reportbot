@@ -1,0 +1,15 @@
+{
+  "name": "reportbot",
+  "version": "1.0.0",
+  "description": "report bot",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.x.x",
+    "body-parser": "^1.x.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

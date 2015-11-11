@@ -1,9 +1,5 @@
-var fs = require('fs');
 var Parse = require('parse/node').Parse;
-var clientkey = fs.readFileSync('./.client_key').toString().replace(/(\r\n|\n|\r)/gm,"");
-var javascriptkey = fs.readFileSync('./.javascript_key').toString().replace(/(\r\n|\n|\r)/gm,"");
-
-Parse.initialize(clientkey, javascriptkey);
+Parse.initialize("Axdkivzv1VVEHR1hNoW1EWHWEU6Wa2zRX4wuZE5j", "VquKxvYVQy53966m0MLb63dMhADHSMDCjLpgRZOf");
 
 module.exports = function (req, res, next) {
   var text = req.body.text;

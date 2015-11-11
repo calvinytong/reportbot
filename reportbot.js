@@ -4,6 +4,7 @@ Parse.initialize("Axdkivzv1VVEHR1hNoW1EWHWEU6Wa2zRX4wuZE5j", "VquKxvYVQy53966m0M
 module.exports = function (req, res, next) {
   var text = req.body.text;
   var tok = text.split(" ");
+  console.log(tok);
   //if wrong syntax put back
   if(tok.length != 2){
     var botPayload = {

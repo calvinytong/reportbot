@@ -45,7 +45,7 @@ module.exports = function (req, res, next) {
         }
       });
       var botPayload = {
-        text : tok[1] + "has been reported " + reports + " times"
+        text : tok[1] + " has been reported " + reports + " times"
       };
       return res.status(200).json(botPayload);
     }

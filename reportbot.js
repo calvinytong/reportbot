@@ -6,7 +6,6 @@ var javascriptkey = fs.readFileSync('./.javascript_key').toString().replace(/(\r
 Parse.initialize(clientkey, javascriptkey);
 
 module.exports = function (req, res, next) {
-  console.log(clientkey);
   var text = req.body.text;
   var tok = text.split(" ");
   console.log(tok);

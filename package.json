@@ -6,8 +6,12 @@
   "dependencies": {
     "express": "^4.x.x",
     "body-parser": "^1.x.x",
+<<<<<<< HEAD
     "parse": "*",
     "fs": "*"
+=======
+    "parse": "*"
+>>>>>>> 17f451ac7df054e2b33407fa9185657525289115
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

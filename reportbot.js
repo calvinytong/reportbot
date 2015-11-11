@@ -13,7 +13,7 @@ module.exports = function (req, res, next) {
     return res.status(200).json(botPayload);
   }
   var People = Parse.Object.extend("People");
-  var query = new Parse.Query(people);
+  var query = new Parse.Query(People);
   query.equalTo("name", tok[1]);
   query.find({
   success: function(people) {
@@ -45,7 +45,7 @@ module.exports = function (req, res, next) {
         }
       });
       var botPayload = {
-        test : tok[1] + "has been reported " + reports + " times"
+        text : tok[1] + "has been reported " + reports + " times"
       };
       return res.status(200).json(botPayload);
     }

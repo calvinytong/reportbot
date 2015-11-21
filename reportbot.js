@@ -33,7 +33,7 @@ const PEOPLE_TABLE = 'People';
 const People = Parse.Object.extend(PEOPLE_TABLE);
 module.exports = function (req, res, next) {
     var text = req.body.text.trim();
-    var tok = text.match(/\S+/g);
+    var tok = text.split(/\s+/);
     console.log('Slack message: ' + tok);
     //if wrong syntax put back
     if(tok[0].toLowerCase() != REPORT_COMMAND) {

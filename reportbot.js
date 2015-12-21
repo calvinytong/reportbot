@@ -35,8 +35,8 @@ const People = Parse.Object.extend(PEOPLE_TABLE);
 module.exports = function (req, res, next) {
     var text = req.body.text.trim().replace(/\s+/g, ' ');
     var tokens = text.split(' ');
-    var reportIndex = text.indexOf(REPORT_COMMAND);
-    var commendIndex = text.indexOf(COMMEND_COMMAND);
+    var reportIndex = tokens.indexOf(REPORT_COMMAND);
+    var commendIndex = tokens.indexOf(COMMEND_COMMAND);
     if(reportIndex || commendIndex) {
         if(index + 1 < tokens.length && tokens[index + 1]) {
             var peopleQuery = new Parse.Query(People);

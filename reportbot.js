@@ -64,7 +64,7 @@ module.exports = function (req, res, next) {
                     }
                     else {
                         var reportee = people[0];
-                        var reports = reportee.get('reports') + reportOrCommend(report);
+                        var reports = reportee.get('reports') + reportOrCommend(reportIndex);
                         reportee.set('reports', reports);
                         if(reports > 0) {
                             reportee.save(null, {

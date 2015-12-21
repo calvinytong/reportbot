@@ -94,6 +94,7 @@ module.exports = function (req, res, next) {
                     var reports = reportee.get('reports') + commendOrReport;
                     reportee.set('reports', reports);
                     var array = (reportee.get('reportsPerDay'));
+                    console.log('array object: ' + array);
                     array.push({'date' : Date.now(), 'reports' : reports});
                     reportee.set('reportsPerDay', array);
                     if(reports > 0) {

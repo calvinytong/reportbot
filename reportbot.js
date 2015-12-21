@@ -1,8 +1,8 @@
 /**
  * reportbot.js
  *
- * Created by Calvin Tong
- * Last updated on 11/20/2015 by Joseph Zhong
+ * Created by Calvin Tong on 11/10/15
+ * Updated by Joseph Zhong on 12/20/15
  *
  *
  * This is the ReportBot.
@@ -17,33 +17,58 @@
  *
  * Current known issues:
  *    Slack on mobile causes syntax errors because of an extra space (11/20)
- *    Isotopes of names are not handled, and creates a new DB Entity (11/20)
+ *    Isotopes refactored to uppercase form -- should be lowercase (12/20)
  *
  **/
 var Parse = require('parse/node').Parse;
 
 // TODO: Either hash these, or remove them from the Git repo
 // and deploy a separate version. Create a bash file to retrieve
-// these from a more secure location, or decrypte the hashes
+// these from a more secure location, or decrypt the hashes
 Parse.initialize('Axdkivzv1VVEHR1hNoW1EWHWEU6Wa2zRX4wuZE5j',
     'VquKxvYVQy53966m0MLb63dMhADHSMDCjLpgRZOf');
 
+const COMMEND_COMMAND = 'commend';
 const REPORT_COMMAND = 'report';
 const PEOPLE_TABLE = 'People';
 const People = Parse.Object.extend(PEOPLE_TABLE);
 module.exports = function (req, res, next) {
-    var text = req.body.text.trim();
-    var tok = text.split(/\s+/);
-    console.log('Slack message: ' + tok);
-    //if wrong syntax put back
-    if(tok[0].toLowerCase() != REPORT_COMMAND) {
-        var botPayload = {
-            text : 'that is not how you report people'
-        };
-        return res.status(200).json(botPayload);
+    var text = req.body.text.trim().replace(/\s+/g, ' ');
+    var tokens = text.split(' ');
+    var reportIndex = text.indexOf(REPORT_COMMAND);
+    var commendIndex = text.indexOf(COMMEND_COMMAND);
+    if(reportIndex || commendIndex) {
+        if(index + 1 < tokens.length && tokens[index + 1]) {
+            this.attemptMessage(tokens[index + 1], reportIndex);
+        }
+        else { //if wrong syntax put back
+            var botPayload = {
+                text : 'that is not how you report people'
+            };
+            return res.status(200).json(botPayload);
+        }
     }
+    console.log('Slack message: ' + tok);
+}
+
+/**
+ * To Title Case Converter
+ * Credits to Greg Dean and Bill the Lizard
+ * http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
+ * Another suggested RegEx to try out: '/\b\w+/g' */
+function toTitleCase(str) {
+    return str.replace(/\w\S*/g,
+        function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+}
+
+/**
+ * Message constructor
+ * @param toReport */
+function attemptMessage(toReport, report) {
     var peopleQuery = new Parse.Query(People);
-    var personName = toTitleCase(tok[1]);
+    var personName = toReport.toLowerCase();
     peopleQuery.equalTo('name', personName);
     peopleQuery.find({
         success: function(people) {
@@ -66,19 +91,35 @@ module.exports = function (req, res, next) {
             }
             else {
                 var reportee = people[0];
-                var reports = reportee.get('reports') + 1;
+                var reports = reportee.get('reports') + this.reportOrCommend(report);
                 reportee.set('reports', reports);
-                reportee.save(null, {
-                    success: function(object){
-                        var botPayload = {
-                            text : personName + ' has been reported ' + reports + ' times'
-                        };
-                        return res.status(200).json(botPayload);
-                    },
-                    error: function(object) {
-                        console.log('failed to create object');
-                    }
-                });
+                if(reports > 0) {
+                    reportee.save(null, {
+                        success: function(object){
+                            var botPayload = {
+                                text : personName + ' has been reported ' + reports + ' times'
+                            };
+                            return res.status(200).json(botPayload);
+                        },
+                        error: function(object) {
+                            console.log('failed to create object');
+                        }
+                    });
+                }
+                else { // negative reports is commending
+                    reportee.save(null, {
+                        success: function(object){
+                            var botPayload = {
+                                text : personName + ' has been commended ' + reports + ' times'
+                            };
+                            return res.status(200).json(botPayload);
+                        },
+                        error: function(object) {
+                            console.log('failed to create object');
+                        }
+                    });
+                }
+
             }
         },
         error: function(error) {
@@ -88,14 +129,14 @@ module.exports = function (req, res, next) {
 }
 
 /**
- * To Title Case Converter
- * Credits to Greg Dean and Bill the Lizard
- * http://stackoverflow.com/questions/196972/convert-string-to-title-case-with-javascript/196991#196991
- * Another suggested RegEx to try out: '/\b\w+/g'
- **/
-function toTitleCase(str) {
-    return str.replace(/\w\S*/g,
-        function(txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
+ * Report or Commend Increment or Decrement
+ * @param report
+ * @returns {number} */
+function reportOrCommend(report) {
+    if(report) {
+        return 1;
+    }
+    else {
+        return -1;
+    }
 }

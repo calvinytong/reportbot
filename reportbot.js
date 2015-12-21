@@ -44,9 +44,9 @@ module.exports = function (req, res, next) {
     if((tokens[0].toLowerCase() == REPORT_COMMAND
             || tokens[0].toLowerCase() == COMMEND_COMMAND)
             && tokens.length >= 2
-            && tokens[index + 1]
-            && tokens[index + 1] != COMMEND_COMMAND
-            && tokens[index + 1] != REPORT_COMMAND) {
+            && tokens[1]
+            && tokens[1] != COMMEND_COMMAND
+            && tokens[1] != REPORT_COMMAND) {
         var peopleQuery = new Parse.Query(People);
         var personName = tokens[index + 1].toLowerCase();
         peopleQuery.equalTo('name', personName);

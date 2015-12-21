@@ -33,7 +33,8 @@ const REPORT_COMMAND = 'report';
 const PEOPLE_TABLE = 'People';
 const People = Parse.Object.extend(PEOPLE_TABLE);
 module.exports = function (req, res, next) {
-    var text = req.body.text.trim().replace(/\s+/g, ' ');
+    var text = req.body.text;
+    text = text.trim().replace(/\s+/g, ' ');
     var tokens = text.split(' ');
     var reportIndex = tokens.indexOf(REPORT_COMMAND);
     var commendIndex = tokens.indexOf(COMMEND_COMMAND);
@@ -56,6 +57,7 @@ module.exports = function (req, res, next) {
                                 }
                                 return res.status(200).json(botPayload);
                             },
+                            // hello gameScore :moo:
                             error: function(gameScore, error) {
                                 console.log('Failed to create new object, with error code: '
                                     + error.message);
@@ -107,7 +109,6 @@ module.exports = function (req, res, next) {
             return res.status(200).json(botPayload);
         }
     }
-    console.log('Slack message: ' + tok);
 }
 
 /**
@@ -120,71 +121,6 @@ function toTitleCase(str) {
         function(txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
-}
-
-/**
- * Message constructor
- * @param toReport */
-function attemptMessage(toReport, report) {
-    var peopleQuery = new Parse.Query(People);
-    var personName = toReport.toLowerCase();
-    peopleQuery.equalTo('name', personName);
-    peopleQuery.find({
-        success: function(people) {
-            if(people.length == 0) {
-                var newPerson = new People();
-                newPerson.set('name', personName);
-                newPerson.set('reports', 1);
-                newPerson.save(null, {
-                    success: function(object) {
-                        var botPayload = {
-                            text : personName + ' has been reported 1 time'
-                        }
-                        return res.status(200).json(botPayload);
-                    },
-                    error: function(gameScore, error) {
-                        console.log('Failed to create new object, with error code: '
-                            + error.message);
-                    }
-                });
-            }
-            else {
-                var reportee = people[0];
-                var reports = reportee.get('reports') + this.reportOrCommend(report);
-                reportee.set('reports', reports);
-                if(reports > 0) {
-                    reportee.save(null, {
-                        success: function(object){
-                            var botPayload = {
-                                text : personName + ' has been reported ' + reports + ' times'
-                            };
-                            return res.status(200).json(botPayload);
-                        },
-                        error: function(object) {
-                            console.log('failed to create object');
-                        }
-                    });
-                }
-                else { // negative reports is commending
-                    reportee.save(null, {
-                        success: function(object){
-                            var botPayload = {
-                                text : personName + ' has been commended ' + reports + ' times'
-                            };
-                            return res.status(200).json(botPayload);
-                        },
-                        error: function(object) {
-                            console.log('failed to create object');
-                        }
-                    });
-                }
-
-            }
-        },
-        error: function(error) {
-            console.log('Error: ' + error.code + ' ' + error.message);
-        }
-    });
 }
 
 /**

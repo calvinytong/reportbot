@@ -35,6 +35,10 @@ const People = Parse.Object.extend(PEOPLE_TABLE);
 module.exports = function (req, res, next) {
     var text = req.body.text;
     var tokens = text.trim().replace(/\s+/g, ' ').split(' ');
+    var reportIndex = tokens.indexOf(REPORT_COMMAND);
+
+    // we can assume that report or commend is at the beginning
+    // due to slack's app integration requirements
     var commendOrReport = (reportIndex == 0 ? 1 : reportIndex);
     // follows report syntax, and does not cause looping
     if((tokens[0].toLowerCase() == REPORT_COMMAND

@@ -89,7 +89,7 @@ module.exports = function (req, res, next) {
                         });
                     }
                 }
-                else {
+                else if(people.length > 0) {
                     var reportee = people[0];
                     var reports = reportee.get('reports') + commendOrReport;
                     reportee.set('reports', reports);

@@ -48,7 +48,7 @@ module.exports = function (req, res, next) {
             && tokens[1] != COMMEND_COMMAND
             && tokens[1] != REPORT_COMMAND) {
         var peopleQuery = new Parse.Query(People);
-        var personName = tokens[index + 1].toLowerCase();
+        var personName = tokens[1].toLowerCase();
         peopleQuery.equalTo('name', personName);
         peopleQuery.find({
             success: function(people) {

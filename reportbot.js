@@ -37,7 +37,8 @@ module.exports = function (req, res, next) {
     var tokens = text.split(' ');
     var reportIndex = tokens.indexOf(REPORT_COMMAND);
     var commendIndex = tokens.indexOf(COMMEND_COMMAND);
-    if(reportIndex || commendIndex) {
+    var index = (reportIndex ? reportIndex : commendIndex);
+    if(index) {
         if(index + 1 < tokens.length && tokens[index + 1]) {
             var peopleQuery = new Parse.Query(People);
             var personName = tokens[index + 1].toLowerCase();

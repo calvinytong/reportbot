@@ -39,7 +39,65 @@ module.exports = function (req, res, next) {
     var commendIndex = text.indexOf(COMMEND_COMMAND);
     if(reportIndex || commendIndex) {
         if(index + 1 < tokens.length && tokens[index + 1]) {
-            this.attemptMessage(tokens[index + 1], reportIndex);
+            var peopleQuery = new Parse.Query(People);
+            var personName = tokens[index + 1].toLowerCase();
+            peopleQuery.equalTo('name', personName);
+            peopleQuery.find({
+                success: function(people) {
+                    if(people.length == 0) {
+                        var newPerson = new People();
+                        newPerson.set('name', personName);
+                        newPerson.set('reports', 1);
+                        newPerson.save(null, {
+                            success: function(object) {
+                                var botPayload = {
+                                    text : personName + ' has been reported 1 time'
+                                }
+                                return res.status(200).json(botPayload);
+                            },
+                            error: function(gameScore, error) {
+                                console.log('Failed to create new object, with error code: '
+                                    + error.message);
+                            }
+                        });
+                    }
+                    else {
+                        var reportee = people[0];
+                        var reports = reportee.get('reports') + reportOrCommend(report);
+                        reportee.set('reports', reports);
+                        if(reports > 0) {
+                            reportee.save(null, {
+                                success: function(object){
+                                    var botPayload = {
+                                        text : personName + ' has been reported ' + reports + ' times'
+                                    };
+                                    return res.status(200).json(botPayload);
+                                },
+                                error: function(object) {
+                                    console.log('failed to create object');
+                                }
+                            });
+                        }
+                        else { // negative reports is commending
+                            reportee.save(null, {
+                                success: function(object){
+                                    var botPayload = {
+                                        text : personName + ' has been commended ' + reports + ' times'
+                                    };
+                                    return res.status(200).json(botPayload);
+                                },
+                                error: function(object) {
+                                    console.log('failed to create object');
+                                }
+                            });
+                        }
+
+                    }
+                },
+                error: function(error) {
+                    console.log('Error: ' + error.code + ' ' + error.message);
+                }
+            });
         }
         else { //if wrong syntax put back
             var botPayload = {

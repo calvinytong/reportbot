@@ -107,7 +107,7 @@ module.exports = function (req, res, next) {
                         reportee.save(null, {
                             success: function(object){
                                 var botPayload = {
-                                    text : personName + ' has been commended ' + reports + ' times'
+                                    text : personName + ' has been commended ' + -reports + ' times'
                                 };
                                 return res.status(200).json(botPayload);
                             },

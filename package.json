@@ -7,7 +7,10 @@
     "express": "^4.x.x",
     "body-parser": "^1.x.x",
     "fs": "*",
-    "parse": "*"
+    "parse": "*",
+    "jade": "*",
+    "stylus": "*",
+    "nib": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Home - ReportBot</title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+        <link rel="stylesheet" href="/stylesheets/minimized.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//www.parsecdn.com/js/parse-1.6.12.min.js"></script>
+        <script src="/js/parse.js"></script>
+    </head>
+    <body>
+    <header>
+        <h1>Squad</h1>
+    </header>
+    <div class="container">
+        <div class="main-content">
+            <div id="container"></div>
+            <p>A small peak at what we've been up to...</p>
+            <p>The graphic above represents the number of times each person has
+                been "reported" over the past couple of days</p>
+        </div>
+    </div>
+    <footer>
+        <p>Running on node with Express, and <del>Jade/Stylus</del> HTML/CSS</p>
+    </footer>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script>
+        $(function(){
+            $('#container').highcharts({
+                chart: {
+                    type: 'area',
+                    events : {
+                        load : function() {
+
+                            // set up the updating of the chart each second
+                            var joseph = this.series[0];
+                            var aneesh = this.series[1];
+                            var calvin = this.series[2];
+                            setInterval(function() {
+                                var latestDate = $('body').data(LAST_UPDATED);
+                                var newReportsQuery = new Parse.Query(People);
+                                newReportsQuery.descending("updatedAt");
+                                newReportsQuery.greaterThanOrEqualTo("updatedAt", latestDate);
+                                newReportsQuery.find({
+                                    success: function (people) {
+                                        for(var i = 0; i < people.length; i++) {
+                                            // update latest update
+                                            $('body').data(LAST_UPDATED, people[0].updatedAt);
+                                            var x = (new Date()).getDate();
+                                            var y = -people[i].get('reports');
+                                            if(people[i].get('name') == 'joseph') {
+                                                joseph.addPoint([x, y], true, true);
+                                            } else if(people[i].get('name') == 'joseph') {
+                                                aneesh.addPoint([x, y], true, true);
+                                            } else if(people[i].get('name') == 'joseph') {
+                                                calvin.addPoint([x, y], true, true);
+                                            }
+                                        }
+                                    }
+                                });
+                            }, 500);
+                        }
+                    }
+                },
+                title: {
+                    text: 'Reports and Commendations'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    /**
+                     * Usage
+                     {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%e. %b',
+                        week: '%e. %b',
+                        month: '%b \'%y',
+                        year: '%Y'
+                     }
+                     * */
+                    dateTimeLabelFormats: {
+                        day: '%e/%b'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                series : [{
+                    name : 'Calvin',
+                    data : (function () {
+                        // generate an array of random data
+                        var calvinQuery = new Parse.Query(People);
+                        calvinQuery.equalTo('name', 'calvin');
+                        calvinQuery.find({
+                            success: function (people) {
+                                for(var i = 0; i < people.length; i++) {
+                                    var x = (new Date()).getDate();
+                                    var y = -people[i].get('reports');
+                                    calvin.addPoint([x, y], true, true);
+                                }
+                            }
+                        });
+                        return data;
+                    }())
+                },
+                {
+                    name : 'Joseph',
+                    data : (function () {
+                        // generate an array of random data
+                        var data = [], time = (new Date()).getTime(), i;
+
+                        for (i = -999; i <= 0; i += 1) {
+                            data.push([
+                                time + i * 1000,
+                                Math.round(Math.random() * 100)
+                            ]);
+                        }
+                        return data;
+                    }())
+                },
+                    {
+                        name : 'Aneesh',
+                        data : (function () {
+                            // generate an array of random data
+                            var data = [], time = (new Date()).getTime(), i;
+
+                            for (i = -999; i <= 0; i += 1) {
+                                data.push([
+                                    time + i * 1000,
+                                    Math.round(Math.random() * 100)
+                                ]);
+                            }
+                            return data;
+                        }())
+                    }]
+            });
+        });
+    </script>
+    </body>
+</html>

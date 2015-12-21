@@ -1,0 +1,60 @@
+/**
+ * Taken from https://github.com/clocklimited/BasicExpressSite
+ */
+@import url("http://fonts.googleapis.com/css?family=Quicksand");
+/*
+ * Store the main color and
+ * background color as variables
+ */
+html{
+  text-align: center;
+}
+body {
+  font-family: 'Georgia';
+  background-color: #faf9f0;
+  color: #444;
+}
+header {
+  font-family: 'Quicksand';
+  padding: 5vw;
+  color: #fff;
+  font-size: 25px;
+  text-align: center;
+  background-color: #fa5b4d;
+  border-bottom: 1px solid #df1806;
+  text-shadow: 0px -1px 0px #df1806;
+}
+.container {
+  width: 70vw;
+  margin: 5vh 15vw;
+  overflow: hidden;
+}
+.main-content {
+  float: left;
+  width: inherit;
+}
+.main-content p {
+  margin-bottom: 5vh;
+}
+.sidebar {
+  width: 100vw;
+}
+p {
+  line-height: 1.5;
+}
+footer {
+  width: 60vw;
+  margin: 10vh 20vw;
+  border-top: 1px dotted #ccc;
+  padding-top: 1vh;
+  font-size: 13px;
+}
+
+/**
+ * Charts
+ */
+#container {
+  width: inherit;
+  height: 70vh;
+  margin: 0 auto;
+}

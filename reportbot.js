@@ -93,7 +93,7 @@ module.exports = function (req, res, next) {
                     var reportee = people[0];
                     var reports = reportee.get('reports') + commendOrReport;
                     reportee.set('reports', reports);
-                    var array = JSON.parse(reportee.get('reportsPerDay'));
+                    var array = (reportee.get('reportsPerDay'));
                     array.push({'date' : Date.now(), 'reports' : reports});
                     reportee.set('reportsPerDay', array);
                     if(reports > 0) {

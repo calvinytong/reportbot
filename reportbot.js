@@ -50,12 +50,15 @@ module.exports = function (req, res, next) {
         var peopleQuery = new Parse.Query(People);
         var personName = tokens[1].toLowerCase();
         peopleQuery.equalTo('name', personName);
+        peopleQuery.include('reportsPerDay');
         peopleQuery.find({
             success: function(people) {
                 if(people.length == 0) {
                     var newPerson = new People();
                     newPerson.set('name', personName);
                     newPerson.set('reports', commendOrReport);
+                    newPerson.set('reportsPerDay', '[{\"date\" : ' + Date.now() + ', ' +
+                                                    '\"reports\" : ' + commendOrReport + '}]');
                     if(commendOrReport > 0) { // negative is commending
                         newPerson.save(null, {
                             success: function(object) {
@@ -90,6 +93,8 @@ module.exports = function (req, res, next) {
                     var reportee = people[0];
                     var reports = reportee.get('reports') + commendOrReport;
                     reportee.set('reports', reports);
+                    reportee.set('reportsPerDay', reportee.get('reportsPerDay').
+                            push({'date':Date.now(), 'reports':reports}));
                     if(reports > 0) {
                         reportee.save(null, {
                             success: function(object){

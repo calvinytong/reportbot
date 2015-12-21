@@ -6,7 +6,9 @@
         <link rel="stylesheet" href="/stylesheets/minimized.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="//www.parsecdn.com/js/parse-1.6.12.min.js"></script>
-        <script src="/js/parse.js"></script>
+        <script>
+            Parse.initialize("Axdkivzv1VVEHR1hNoW1EWHWEU6Wa2zRX4wuZE5j", "VquKxvYVQy53966m0MLb63dMhADHSMDCjLpgRZOf");
+        </script>
     </head>
     <body>
     <header>
@@ -27,6 +29,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script>
+        const People = Parse.Object.extend('People');
+        const LAST_UPDATED = "LAST_UPDATED";
+        $('body').data(LAST_UPDATED, 0);
         $(function(){
             $('#container').highcharts({
                 chart: {
@@ -94,16 +99,22 @@
                 },
                 series : [{
                     name : 'Calvin',
-                    data : (function () {
+                    data : (function() {
                         // generate an array of random data
+                        var data = [];
                         var calvinQuery = new Parse.Query(People);
                         calvinQuery.equalTo('name', 'calvin');
+                        calvinQuery.include('reportsPerDay');
                         calvinQuery.find({
                             success: function (people) {
-                                for(var i = 0; i < people.length; i++) {
-                                    var x = (new Date()).getDate();
-                                    var y = -people[i].get('reports');
-                                    calvin.addPoint([x, y], true, true);
+                                if(people.length > 0) {
+                                    console.log(people[0].get('reportsPerDay'));
+                                    var reportsPerDay = people[0].get('reportsPerDay');
+                                    for(var i = 0; i < reportsPerDay.length; i++) {
+                                        var x = reportsPerDay[i].date;
+                                        var y = -reportsPerDay[i].reports;
+                                        data.push([x, y]);
+                                    }
                                 }
                             }
                         });
@@ -114,14 +125,23 @@
                     name : 'Joseph',
                     data : (function () {
                         // generate an array of random data
-                        var data = [], time = (new Date()).getTime(), i;
-
-                        for (i = -999; i <= 0; i += 1) {
-                            data.push([
-                                time + i * 1000,
-                                Math.round(Math.random() * 100)
-                            ]);
-                        }
+                        var data = [];
+                        var josephQuery = new Parse.Query(People);
+                        josephQuery.equalTo('name', 'joseph');
+                        josephQuery.include('reportsPerDay');
+                        josephQuery.find({
+                            success: function (people) {
+                                if(people.length > 0) {
+                                    console.log(people[0].get('reportsPerDay'));
+                                    var reportsPerDay = people[0].get('reportsPerDay');
+                                    for(var i = 0; i < reportsPerDay.length; i++) {
+                                        var x = reportsPerDay[i].date;
+                                        var y = -reportsPerDay[i].reports;
+                                        data.push([x, y]);
+                                    }
+                                }
+                            }
+                        });
                         return data;
                     }())
                 },
@@ -129,14 +149,23 @@
                         name : 'Aneesh',
                         data : (function () {
                             // generate an array of random data
-                            var data = [], time = (new Date()).getTime(), i;
-
-                            for (i = -999; i <= 0; i += 1) {
-                                data.push([
-                                    time + i * 1000,
-                                    Math.round(Math.random() * 100)
-                                ]);
-                            }
+                            var data = [];
+                            var aneeshQuery = new Parse.Query(People);
+                            aneeshQuery.equalTo('name', 'aneesh');
+                            aneeshQuery.include('reportsPerDay');
+                            aneeshQuery.find({
+                                success: function (people) {
+                                    if(people.length > 0) {
+                                        console.log(people[0].get('reportsPerDay'));
+                                        var reportsPerDay = people[0].get('reportsPerDay');
+                                        for(var i = 0; i < reportsPerDay.length; i++) {
+                                            var x = reportsPerDay[i].date;
+                                            var y = -reportsPerDay[i].reports;
+                                            data.push([x, y]);
+                                        }
+                                    }
+                                }
+                            });
                             return data;
                         }())
                     }]

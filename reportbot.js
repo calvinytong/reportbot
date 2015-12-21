@@ -55,20 +55,36 @@ module.exports = function (req, res, next) {
                 if(people.length == 0) {
                     var newPerson = new People();
                     newPerson.set('name', personName);
-                    newPerson.set('reports', 1);
-                    newPerson.save(null, {
-                        success: function(object) {
-                            var botPayload = {
-                                text : personName + ' has been reported 1 time'
+                    newPerson.set('reports', commendOrReport);
+                    if(commendOrReport > 0) { // negative is commending
+                        newPerson.save(null, {
+                            success: function(object) {
+                                var botPayload = {
+                                    text : personName + ' has been reported 1 time'
+                                }
+                                return res.status(200).json(botPayload);
+                            },
+                            // hello gameScore :moo:
+                            error: function(gameScore, error) {
+                                console.log('Failed to create new object, with error code: '
+                                    + error.message);
                             }
-                            return res.status(200).json(botPayload);
-                        },
-                        // hello gameScore :moo:
-                        error: function(gameScore, error) {
-                            console.log('Failed to create new object, with error code: '
-                                + error.message);
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        newPerson.save(null, {
+                            success: function(object) {
+                                var botPayload = {
+                                    text : personName + ' has been commended 1 time'
+                                }
+                                return res.status(200).json(botPayload);
+                            },
+                            error: function(gameScore, error) {
+                                console.log('Failed to create new object, with error code: '
+                                    + error.message);
+                            }
+                        });
+                    }
                 }
                 else {
                     var reportee = people[0];
